@@ -59,6 +59,7 @@ struct WebsiteListView: View {
                             onTap: { blocker.toggleSite(site.id) },
                             onRemove: site.isCustom ? { blocker.removeWebsite(site.id) } : nil
                         )
+                        .equatable()
                         .opacity(hasAppeared ? 1 : 0)
                         .offset(y: hasAppeared ? 0 : 8)
                         .animation(
@@ -98,10 +99,14 @@ struct WebsiteListView: View {
     }
 }
 
-private struct WebsiteRow: View {
+private struct WebsiteRow: View, Equatable {
     let entry: WebsiteEntry
     let onTap: () -> Void
     let onRemove: (() -> Void)?
+
+    static func == (lhs: WebsiteRow, rhs: WebsiteRow) -> Bool {
+        lhs.entry == rhs.entry
+    }
 
     @State private var isHovered: Bool = false
 

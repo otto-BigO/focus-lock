@@ -13,13 +13,30 @@ struct AppInfo: Identifiable, Hashable {
     func hash(into hasher: inout Hasher) { hasher.combine(id) }
 }
 
+// Isolated so only SessionActiveView subscribes to per-second ticks.
+final class SessionClock: ObservableObject {
+    static let shared = SessionClock()
+    @Published var secondsRemaining: Int = 0
+    private init() {}
+
+    func formattedTime() -> String {
+        let m = secondsRemaining / 60
+        let s = secondsRemaining % 60
+        return String(format: "%02d:%02d", m, s)
+    }
+}
+
 final class FocusManager: ObservableObject {
     static let shared = FocusManager()
 
     @Published var isSessionActive: Bool = false
-    @Published var secondsRemaining: Int = 0
     @Published var selectedAppBundleIDs: Set<String> = []
     @Published var installedApps: [AppInfo] = []
+
+    var secondsRemaining: Int {
+        get { SessionClock.shared.secondsRemaining }
+        set { SessionClock.shared.secondsRemaining = newValue }
+    }
 
     private var timer: Timer?
     private var tickCount: Int = 0
@@ -246,11 +263,7 @@ final class FocusManager: ObservableObject {
         }
     }
 
-    func formattedTime() -> String {
-        let m = secondsRemaining / 60
-        let s = secondsRemaining % 60
-        return String(format: "%02d:%02d", m, s)
-    }
+    func formattedTime() -> String { SessionClock.shared.formattedTime() }
 }
 
 // MARK: - In-app session-complete overlay

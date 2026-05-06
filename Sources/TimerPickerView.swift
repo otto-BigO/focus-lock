@@ -123,22 +123,7 @@ private struct DurationTile: View {
             .background(
                 ZStack {
                     RoundedRectangle(cornerRadius: 14, style: .continuous)
-                        .fill(.ultraThinMaterial)
-
-                    if selected {
-                        RoundedRectangle(cornerRadius: 14, style: .continuous)
-                            .fill(Color.blue.opacity(0.15))
-                    }
-
-                    RoundedRectangle(cornerRadius: 14, style: .continuous)
-                        .fill(
-                            LinearGradient(
-                                colors: [Color.white.opacity(0.10), Color.white.opacity(0.0)],
-                                startPoint: .top,
-                                endPoint: .bottom
-                            )
-                        )
-                        .allowsHitTesting(false)
+                        .fill(selected ? Color.blue.opacity(0.18) : Color.white.opacity(0.08))
                 }
             )
             .overlay(
