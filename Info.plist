@@ -8,6 +8,10 @@
     <string>FocusLock</string>
     <key>CFBundleExecutable</key>
     <string>FocusLock</string>
+    <key>CFBundleIconFile</key>
+    <string>AppIcon</string>
+    <key>CFBundleIconName</key>
+    <string>AppIcon</string>
     <key>CFBundleIdentifier</key>
     <string>com.focuslock.FocusLock</string>
     <key>CFBundleInfoDictionaryVersion</key>

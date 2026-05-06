@@ -10,6 +10,7 @@ struct ContentView: View {
     @ObservedObject var manager = FocusManager.shared
     @ObservedObject var blocker = WebsiteBlocker.shared
     @State private var leftTab: LeftPanelTab = .apps
+    @State private var showSettings: Bool = false
 
     var body: some View {
         ZStack {
@@ -65,6 +66,30 @@ struct ContentView: View {
                 .animation(.spring(response: 0.4, dampingFraction: 0.8), value: manager.isSessionActive)
             }
 
+            // Gear button — top-right, above panels.
+            VStack {
+                HStack {
+                    Spacer()
+                    Button(action: { showSettings = true }) {
+                        Image(systemName: "gearshape.fill")
+                            .font(.system(size: 13, weight: .semibold))
+                            .foregroundColor(Glass.textSecondary)
+                            .frame(width: 28, height: 28)
+                            .background(
+                                Circle().fill(Color.white.opacity(0.08))
+                            )
+                            .overlay(
+                                Circle().strokeBorder(Color.white.opacity(0.12), lineWidth: 0.5)
+                            )
+                    }
+                    .buttonStyle(PressableScaleStyle())
+                    .help("Settings")
+                }
+                .padding(.top, 8)
+                .padding(.trailing, 16)
+                Spacer()
+            }
+
             // First-run admin explainer for /etc/hosts blocking
             if blocker.needsExplanation {
                 AdminExplainerSheet()
@@ -74,6 +99,9 @@ struct ContentView: View {
         }
         .preferredColorScheme(.dark)
         .animation(.spring(response: 0.35, dampingFraction: 0.85), value: blocker.needsExplanation)
+        .sheet(isPresented: $showSettings) {
+            SettingsView()
+        }
     }
 }
 
@@ -279,7 +307,7 @@ struct SessionActiveView: View {
             VStack(spacing: 18) {
                 ZStack {
                     Circle()
-                        .stroke(Color.white.opacity(0.10), lineWidth: 3)
+                        .stroke(Color.white.opacity(0.12), lineWidth: 3)
                         .frame(width: 200, height: 200)
 
                     Circle()

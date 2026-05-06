@@ -60,7 +60,7 @@ struct AppListView: View {
                         .offset(y: hasAppeared ? 0 : 8)
                         .animation(
                             .spring(response: 0.45, dampingFraction: 0.85)
-                                .delay(min(Double(idx) * 0.012, 0.25)),
+                                .delay(min(Double(idx) * 0.018, 0.30)),
                             value: hasAppeared
                         )
 
@@ -73,6 +73,7 @@ struct AppListView: View {
                     }
                 }
                 .padding(.bottom, 12)
+                .animation(.spring(response: 0.35, dampingFraction: 0.85), value: searchText)
             }
             .padding(.horizontal, 6)
         }
@@ -103,16 +104,21 @@ private struct AppRow: View, Equatable {
         Button(action: onTap) {
             HStack(spacing: 10) {
                 Group {
-                    if let icon = app.icon {
+                    if let icon = app.icon, icon.size.width > 0 {
                         Image(nsImage: icon)
                             .resizable()
                             .interpolation(.high)
                             .frame(width: 22, height: 22)
                             .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
                     } else {
-                        RoundedRectangle(cornerRadius: 6, style: .continuous)
-                            .fill(Color.white.opacity(0.08))
-                            .frame(width: 22, height: 22)
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 6, style: .continuous)
+                                .fill(Color.white.opacity(0.08))
+                            Image(systemName: "app")
+                                .font(.system(size: 12, weight: .regular))
+                                .foregroundColor(Color.white.opacity(0.40))
+                        }
+                        .frame(width: 22, height: 22)
                     }
                 }
 

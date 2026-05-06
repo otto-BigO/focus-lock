@@ -41,6 +41,8 @@ final class FocusManager: ObservableObject {
     private var timer: Timer?
     private var tickCount: Int = 0
     private var launchObserver: NSObjectProtocol?
+    private var sessionStartTime: Date?
+    private var sessionDuration: Int = 0   // minutes
 
     private init() {
         loadInstalledApps()
@@ -170,12 +172,14 @@ final class FocusManager: ObservableObject {
     func startSession(duration: Int) {
         guard !isSessionActive else { return }
         print("[FocusLock] Starting session for \(duration) minute(s) — blocking \(selectedAppBundleIDs.count) app(s): \(selectedAppBundleIDs)")
+        sessionStartTime = Date()
+        sessionDuration = duration
         isSessionActive = true
         secondsRemaining = duration * 60
         tickCount = 0
         quitBlockedApps()
         WebsiteBlocker.shared.blockAll()
-        NSSound(named: "Purr")?.play()
+        if SettingsStore.shared.soundsEnabled { NSSound(named: "Purr")?.play() }
 
         installLaunchObserver()
 
@@ -233,26 +237,48 @@ final class FocusManager: ObservableObject {
 
     func endSession() {
         print("[FocusLock] Session ended")
+        recordSession(completedNaturally: true)
         timer?.invalidate()
         timer = nil
         removeLaunchObserver()
         WebsiteBlocker.shared.unblockAll()
         isSessionActive = false
         secondsRemaining = 0
-        NSSound(named: "Glass")?.play()
-        CompletionOverlay.shared.show()
+        if SettingsStore.shared.soundsEnabled { NSSound(named: "Glass")?.play() }
+        if SettingsStore.shared.overlayEnabled { CompletionOverlay.shared.show() }
         postSessionCompleteNotification()
     }
 
     func cancelSession() {
         print("[FocusLock] Session cancelled")
+        recordSession(completedNaturally: false)
         timer?.invalidate()
         timer = nil
         removeLaunchObserver()
         WebsiteBlocker.shared.unblockAll()
         isSessionActive = false
         secondsRemaining = 0
-        NSSound(named: "Basso")?.play()
+        if SettingsStore.shared.soundsEnabled { NSSound(named: "Basso")?.play() }
+    }
+
+    private func recordSession(completedNaturally: Bool) {
+        let elapsed = max(0, sessionDuration * 60 - secondsRemaining)
+        let appNames = selectedAppBundleIDs.compactMap { id in
+            installedApps.first(where: { $0.id == id })?.name
+        }.sorted()
+        let siteNames = WebsiteBlocker.shared.blockedWebsites
+            .filter { $0.isSelected }
+            .map { $0.displayName }
+            .sorted()
+        SessionStore.shared.recordSession(FocusSession(
+            id: UUID(),
+            startedAt: sessionStartTime ?? Date(),
+            plannedDuration: sessionDuration,
+            actualDuration: elapsed,
+            completedNaturally: completedNaturally,
+            blockedApps: appNames,
+            blockedWebsites: siteNames
+        ))
     }
 
     func toggleApp(_ bundleID: String) {
