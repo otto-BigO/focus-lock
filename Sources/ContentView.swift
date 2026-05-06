@@ -260,17 +260,12 @@ private struct AdminExplainerSheet: View {
 
 struct SessionActiveView: View {
     @ObservedObject var manager = FocusManager.shared
-
-    private var totalSeconds: Int {
-        max(manager.secondsRemaining, 1)
-    }
+    @ObservedObject var clock = SessionClock.shared
 
     private var progress: Double {
-        // We don't know original duration, so derive a smooth "remaining" feel.
-        // Use minutes-rounded ceiling: progress = remaining / nextWholeMin*60
-        let initialEstimate = ((manager.secondsRemaining + 59) / 60) * 60
+        let initialEstimate = ((clock.secondsRemaining + 59) / 60) * 60
         let denom = max(initialEstimate, 1)
-        return 1.0 - (Double(manager.secondsRemaining) / Double(denom))
+        return 1.0 - (Double(clock.secondsRemaining) / Double(denom))
     }
 
     var body: some View {
@@ -298,12 +293,12 @@ struct SessionActiveView: View {
                         .animation(.easeInOut(duration: 0.5), value: progress)
 
                     VStack(spacing: 6) {
-                        Text(manager.formattedTime())
+                        Text(clock.formattedTime())
                             .font(.system(size: 56, weight: .thin, design: .default))
                             .foregroundColor(Glass.textPrimary)
                             .monospacedDigit()
                             .contentTransition(.numericText())
-                            .animation(.easeInOut(duration: 0.25), value: manager.secondsRemaining)
+                            .animation(.easeInOut(duration: 0.25), value: clock.secondsRemaining)
                         Text("Stay focused 💪")
                             .font(.system(size: 13, weight: .regular))
                             .foregroundColor(Glass.textSecondary)

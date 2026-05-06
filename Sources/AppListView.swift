@@ -55,6 +55,7 @@ struct AppListView: View {
                             selected: manager.selectedAppBundleIDs.contains(app.id),
                             onTap: { manager.toggleApp(app.id) }
                         )
+                        .equatable()
                         .opacity(hasAppeared ? 1 : 0)
                         .offset(y: hasAppeared ? 0 : 8)
                         .animation(
@@ -87,10 +88,14 @@ struct AppListView: View {
     }
 }
 
-private struct AppRow: View {
+private struct AppRow: View, Equatable {
     let app: AppInfo
     let selected: Bool
     let onTap: () -> Void
+
+    static func == (lhs: AppRow, rhs: AppRow) -> Bool {
+        lhs.app.id == rhs.app.id && lhs.selected == rhs.selected
+    }
 
     @State private var isHovered: Bool = false
 

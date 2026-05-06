@@ -18,20 +18,6 @@ struct GlassPanel: ViewModifier {
             )
             .overlay(
                 RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                    .fill(
-                        LinearGradient(
-                            colors: [
-                                Color.white.opacity(0.06),
-                                Color.white.opacity(0.0)
-                            ],
-                            startPoint: .top,
-                            endPoint: .bottom
-                        )
-                    )
-                    .allowsHitTesting(false)
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                     .strokeBorder(Color.white.opacity(strokeOpacity), lineWidth: 1)
                     .allowsHitTesting(false)
             )
@@ -92,11 +78,7 @@ struct WindowAccessor: NSViewRepresentable {
     }
 
     func updateNSView(_ nsView: NSView, context: Context) {
-        DispatchQueue.main.async {
-            if let window = nsView.window {
-                self.configure(window)
-            }
-        }
+        // Window config is static — nothing to update on re-renders.
     }
 }
 
