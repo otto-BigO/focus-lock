@@ -5,6 +5,8 @@ import AppKit
 struct FocusLockApp: App {
     init() {
         Self.installAppIcon()
+        _ = WidgetSync.shared
+        _ = ScheduleStore.shared
         DispatchQueue.main.async {
             FocusManager.shared.requestAccessibilityPermission()
         }
@@ -12,7 +14,7 @@ struct FocusLockApp: App {
 
     var body: some Scene {
         WindowGroup("FocusLock") {
-            ContentView()
+            MainTabView()
                 .frame(width: 720, height: 520)
                 .background(
                     WindowAccessor { window in
@@ -28,10 +30,12 @@ struct FocusLockApp: App {
         window.titlebarAppearsTransparent = true
         window.titleVisibility = .hidden
         window.styleMask.insert(.fullSizeContentView)
+        window.styleMask.remove(.resizable)
         window.isMovableByWindowBackground = true
         window.backgroundColor = .clear
         window.isOpaque = false
         window.hasShadow = true
+        window.standardWindowButton(.zoomButton)?.isEnabled = false
     }
 
     private static func installAppIcon() {
