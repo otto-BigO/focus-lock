@@ -1,0 +1,5 @@
+FocusLock.app/
+*.zip
+*.dmg
+build/
+.DS_Store
