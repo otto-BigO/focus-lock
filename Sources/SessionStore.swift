@@ -8,6 +8,8 @@ struct FocusSession: Codable, Identifiable {
     let completedNaturally: Bool
     let blockedApps: [String]
     let blockedWebsites: [String]
+    let breakTaken: Bool?           // optional for backward compat with old persisted JSON
+    let breakDurationMinutes: Int?
 }
 
 final class SessionStore: ObservableObject {
@@ -25,6 +27,23 @@ final class SessionStore: ObservableObject {
         sessions.insert(session, at: 0)
         saveToDisk()
         print("[SessionStore] Recorded session — completed=\(session.completedNaturally) elapsed=\(session.actualDuration)s apps=\(session.blockedApps.count) sites=\(session.blockedWebsites.count)")
+    }
+
+    func updateLastSession(breakTaken: Bool, breakDuration: Int) {
+        guard !sessions.isEmpty else { return }
+        let s = sessions[0]
+        sessions[0] = FocusSession(
+            id: s.id,
+            startedAt: s.startedAt,
+            plannedDuration: s.plannedDuration,
+            actualDuration: s.actualDuration,
+            completedNaturally: s.completedNaturally,
+            blockedApps: s.blockedApps,
+            blockedWebsites: s.blockedWebsites,
+            breakTaken: breakTaken,
+            breakDurationMinutes: breakDuration
+        )
+        saveToDisk()
     }
 
     private func saveToDisk() {

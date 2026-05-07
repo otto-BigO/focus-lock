@@ -59,7 +59,12 @@ swiftc \
     Sources/SettingsView.swift \
     Sources/ScheduleStore.swift \
     Sources/ScheduleView.swift \
-    Sources/WidgetSync.swift
+    Sources/WidgetSync.swift \
+    Sources/DurationStepper.swift \
+    Sources/OnboardingView.swift \
+    Sources/BreakManager.swift \
+    Sources/BreakView.swift \
+    Sources/BreakCompleteOverlay.swift
 
 echo "[build] Compiling widget extension..."
 cp Widget/Info.plist "${WIDGET_CONTENTS}/Info.plist"

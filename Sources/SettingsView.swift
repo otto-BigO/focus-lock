@@ -54,6 +54,12 @@ struct SettingsView: View {
                         subtitle: "Floating panel when a session finishes",
                         isOn: $settings.overlayEnabled
                     )
+
+                    ToggleRow(
+                        title: "Break Reminders",
+                        subtitle: "Suggests a break after each completed session",
+                        isOn: $settings.breakRemindersEnabled
+                    )
                 }
                 .padding(.horizontal, 18)
 
@@ -69,7 +75,7 @@ struct SettingsView: View {
                 .padding(.bottom, 16)
             }
         }
-        .frame(width: 420, height: 360)
+        .frame(width: 420, height: 440)
         .preferredColorScheme(.dark)
     }
 }

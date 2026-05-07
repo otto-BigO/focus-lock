@@ -218,11 +218,19 @@ private struct SessionRow: View {
 
             Spacer()
 
-            Text("\(max(1, session.actualDuration / 60)) min")
-                .font(.system(size: 14, weight: .semibold))
-                .foregroundColor(session.completedNaturally
-                                 ? Glass.accent
-                                 : Glass.textTertiary)
+            HStack(spacing: 4) {
+                Text("\(max(1, session.actualDuration / 60)) min")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundColor(session.completedNaturally
+                                     ? Glass.accent
+                                     : Glass.textTertiary)
+                if session.breakTaken == true {
+                    Image(systemName: "leaf.fill")
+                        .font(.system(size: 10, weight: .regular))
+                        .foregroundColor(Color.green.opacity(0.75))
+                        .help("Break taken")
+                }
+            }
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 10)

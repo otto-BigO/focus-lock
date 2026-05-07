@@ -6,6 +6,7 @@ final class SettingsStore: ObservableObject {
 
     private let soundsKey = "focuslock.soundsEnabled"
     private let overlayKey = "focuslock.overlayEnabled"
+    private let breakRemindersKey = "focuslock.breakRemindersEnabled"
 
     @Published var soundsEnabled: Bool {
         didSet { UserDefaults.standard.set(soundsEnabled, forKey: soundsKey) }
@@ -15,14 +16,20 @@ final class SettingsStore: ObservableObject {
         didSet { UserDefaults.standard.set(overlayEnabled, forKey: overlayKey) }
     }
 
+    @Published var breakRemindersEnabled: Bool {
+        didSet { UserDefaults.standard.set(breakRemindersEnabled, forKey: breakRemindersKey) }
+    }
+
     @Published var launchAtLogin: Bool
 
     private init() {
         let defaults = UserDefaults.standard
-        if defaults.object(forKey: soundsKey) == nil { defaults.set(true, forKey: soundsKey) }
-        if defaults.object(forKey: overlayKey) == nil { defaults.set(true, forKey: overlayKey) }
-        self.soundsEnabled = defaults.bool(forKey: soundsKey)
-        self.overlayEnabled = defaults.bool(forKey: overlayKey)
+        if defaults.object(forKey: soundsKey)         == nil { defaults.set(true, forKey: soundsKey) }
+        if defaults.object(forKey: overlayKey)        == nil { defaults.set(true, forKey: overlayKey) }
+        if defaults.object(forKey: breakRemindersKey) == nil { defaults.set(true, forKey: breakRemindersKey) }
+        self.soundsEnabled         = defaults.bool(forKey: soundsKey)
+        self.overlayEnabled        = defaults.bool(forKey: overlayKey)
+        self.breakRemindersEnabled = defaults.bool(forKey: breakRemindersKey)
         self.launchAtLogin = SMAppService.mainApp.status == .enabled
     }
 

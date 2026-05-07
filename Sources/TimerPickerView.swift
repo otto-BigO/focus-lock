@@ -2,7 +2,7 @@ import SwiftUI
 
 struct TimerPickerView: View {
     @ObservedObject var manager = FocusManager.shared
-    @State private var selectedDuration: Int = 25
+    @AppStorage("focuslock.lastDuration") private var selectedDuration: Int = 25
 
     private let presets = [1, 15, 25, 45, 60, 90]
     private let columns = [
@@ -29,6 +29,13 @@ struct TimerPickerView: View {
                         }
                     )
                 }
+            }
+
+            VStack(alignment: .leading, spacing: 6) {
+                Text("Or set custom time")
+                    .font(.system(size: 12, weight: .regular))
+                    .foregroundColor(Glass.textTertiary)
+                DurationStepper(value: $selectedDuration, minValue: 5, maxValue: 180, step: 5)
             }
 
             Spacer()
