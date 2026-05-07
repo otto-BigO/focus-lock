@@ -247,6 +247,7 @@ final class FocusManager: ObservableObject {
         if SettingsStore.shared.soundsEnabled { NSSound(named: "Glass")?.play() }
         if SettingsStore.shared.overlayEnabled { CompletionOverlay.shared.show() }
         postSessionCompleteNotification()
+        BreakManager.shared.startBreak(focusMinutes: max(0, sessionDuration * 60 - secondsRemaining) / 60)
     }
 
     func cancelSession() {
@@ -277,7 +278,9 @@ final class FocusManager: ObservableObject {
             actualDuration: elapsed,
             completedNaturally: completedNaturally,
             blockedApps: appNames,
-            blockedWebsites: siteNames
+            blockedWebsites: siteNames,
+            breakTaken: nil,
+            breakDurationMinutes: nil
         ))
     }
 

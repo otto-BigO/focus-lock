@@ -11,6 +11,9 @@ struct ContentView: View {
     @ObservedObject var blocker = WebsiteBlocker.shared
     @State private var leftTab: LeftPanelTab = .apps
     @State private var showSettings: Bool = false
+    // Mirror of BreakManager.isBreakActive — observed via .onReceive so the
+    // per-second `breakSecondsRemaining` ticks don't re-render the whole tree.
+    @State private var isBreakActive: Bool = BreakManager.shared.isBreakActive
 
     var body: some View {
         ZStack {
@@ -39,7 +42,15 @@ struct ContentView: View {
                         .glassPanel()
 
                     ZStack {
-                        if manager.isSessionActive {
+                        if isBreakActive {
+                            BreakView()
+                                .transition(
+                                    .asymmetric(
+                                        insertion: .opacity.combined(with: .scale(scale: 0.96)),
+                                        removal: .opacity.combined(with: .scale(scale: 1.04))
+                                    )
+                                )
+                        } else if manager.isSessionActive {
                             SessionActiveView()
                                 .transition(
                                     .asymmetric(
@@ -64,7 +75,9 @@ struct ContentView: View {
                 .padding(.top, 24)
                 .padding(.bottom, 16)
                 .animation(.spring(response: 0.4, dampingFraction: 0.8), value: manager.isSessionActive)
+                .animation(.spring(response: 0.4, dampingFraction: 0.8), value: isBreakActive)
             }
+            .onReceive(BreakManager.shared.$isBreakActive) { isBreakActive = $0 }
 
             // Gear button — top-right, above panels.
             VStack {

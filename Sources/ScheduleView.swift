@@ -258,25 +258,28 @@ private struct ScheduleEditSheet: View {
 
                         // Duration
                         Section(label: "Duration") {
-                            HStack(spacing: 6) {
-                                ForEach(durationPresets, id: \.self) { mins in
-                                    Button(action: { duration = mins }) {
-                                        Text("\(mins)")
-                                            .font(.system(size: 13, weight: .bold))
-                                            .foregroundColor(duration == mins ? .white : Glass.textPrimary)
-                                            .frame(maxWidth: .infinity)
-                                            .frame(height: 36)
-                                            .background(
-                                                RoundedRectangle(cornerRadius: 9, style: .continuous)
-                                                    .fill(duration == mins ? Glass.accent.opacity(0.40) : Color.white.opacity(0.06))
-                                            )
-                                            .overlay(
-                                                RoundedRectangle(cornerRadius: 9, style: .continuous)
-                                                    .strokeBorder(Color.white.opacity(duration == mins ? 0.22 : 0.10), lineWidth: 0.5)
-                                            )
+                            VStack(spacing: 8) {
+                                HStack(spacing: 6) {
+                                    ForEach(durationPresets, id: \.self) { mins in
+                                        Button(action: { duration = mins }) {
+                                            Text("\(mins)")
+                                                .font(.system(size: 13, weight: .bold))
+                                                .foregroundColor(duration == mins ? .white : Glass.textPrimary)
+                                                .frame(maxWidth: .infinity)
+                                                .frame(height: 36)
+                                                .background(
+                                                    RoundedRectangle(cornerRadius: 9, style: .continuous)
+                                                        .fill(duration == mins ? Glass.accent.opacity(0.40) : Color.white.opacity(0.06))
+                                                )
+                                                .overlay(
+                                                    RoundedRectangle(cornerRadius: 9, style: .continuous)
+                                                        .strokeBorder(Color.white.opacity(duration == mins ? 0.22 : 0.10), lineWidth: 0.5)
+                                                )
+                                        }
+                                        .buttonStyle(PressableScaleStyle(pressedScale: 0.94))
                                     }
-                                    .buttonStyle(PressableScaleStyle(pressedScale: 0.94))
                                 }
+                                DurationStepper(value: $duration, minValue: 1, maxValue: 180, step: 5)
                             }
                         }
 

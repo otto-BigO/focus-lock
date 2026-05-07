@@ -25,8 +25,26 @@ enum AppTab: Int, CaseIterable, Hashable {
 struct MainTabView: View {
     @State private var selectedTab: Int = 0
     @State private var previousTab: Int = 0
+    @AppStorage("focuslock.onboardingComplete") private var onboardingComplete: Bool = false
+    @State private var showOnboarding: Bool = false
 
     var body: some View {
+        ZStack {
+            mainContent
+            if showOnboarding {
+                OnboardingView(isPresented: $showOnboarding)
+                    .zIndex(20)
+                    .transition(.opacity)
+            }
+        }
+        .onAppear {
+            if !onboardingComplete && !showOnboarding {
+                showOnboarding = true
+            }
+        }
+    }
+
+    private var mainContent: some View {
         ZStack {
             if selectedTab == 0 {
                 ContentView()
